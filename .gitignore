@@ -1,0 +1,6 @@
+crmenv/
+__pycache__/
+mysqldb_crmhub/
+.env
+docker-compose.yaml
+migrations/

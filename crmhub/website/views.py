@@ -12,7 +12,7 @@ def home(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "Login Successful!")
+            messages.success(request, "Login Successful. Welcome back !")
             return redirect('home')
         else:
             messages.success(request, "Login Failed. Please check your credentials and try again...")
@@ -21,4 +21,6 @@ def home(request):
         return render(request, 'home.html', {})
 
 def logout_user(request):
-    pass
+    logout(request)
+    messages.success(request, "Logout Successful. Don't hesitate to come again !")
+    return redirect('home')

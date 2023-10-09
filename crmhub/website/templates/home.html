@@ -14,8 +14,6 @@
     <div class="card-body">
     <form action="{% url 'home'%}" method="post">
         {% csrf_token %}
-
-        <form>
             <br>
             <div class="mb-3">
             <input type="text" class="form-control" name="username", placeholder="Enter your username" required>
@@ -26,7 +24,7 @@
             </div>
             <br>
             <button type="submit" class="btn btn-secondary">Submit</button>
-        </form>
+        
 
     </form>
     </div>

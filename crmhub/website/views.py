@@ -50,8 +50,7 @@ def register_user(request):
             return redirect('home')
     else:
         form = SignUpForm()
-        return render(request, 'register.html', {'form': form})
-        
+    
     return render(request, 'register.html', {'form': form})
 
 def user_record(request, pk):
@@ -84,3 +83,17 @@ def add_record(request):
     else:
         messages.error(request, "You must be logged in to view that page...")
         return redirect('home')
+
+def update_record(request, pk):
+	if request.user.is_authenticated:
+		current_record = Record.objects.get(id=pk)
+		user_form = AddRecordForm(request.POST or None, instance=current_record)
+		if user_form.is_valid():
+			user_form.save()
+			messages.success(request, "Record Has Been Updated!")
+			return redirect('home')
+		return render(request, 'update_record.html', {'form':user_form})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('home')
+

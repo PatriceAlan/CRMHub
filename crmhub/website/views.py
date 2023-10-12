@@ -1,12 +1,21 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm
+from .forms import SignUpForm, AddRecordForm
 from .models import Record
 
 def home(request):
+    search_query = request.GET.get('search_query')
     records = Record.objects.all()
 
+    if search_query:
+        # Effectuez la recherche uniquement si un terme de recherche est fourni
+        records = records.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -21,7 +30,7 @@ def home(request):
             messages.error(request, "Login Failed. Please check your credentials and try again...")
             return redirect('home')
     else:
-        return render(request, 'home.html', {'records':records})
+        return render(request, 'home.html', {'records': records, 'search_query': search_query})
 
 def logout_user(request):
     logout(request)
@@ -32,7 +41,7 @@ def register_user(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Save the user
+            user = form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
@@ -45,27 +54,33 @@ def register_user(request):
         
     return render(request, 'register.html', {'form': form})
 
-
 def user_record(request, pk):
     if request.user.is_authenticated:
-        # Look up records
         user_record = Record.objects.get(id=pk)
         return render(request, 'record.html', {'user_record': user_record})
     else:
-        messages.error(request, "You must be login to view that page...")
+        messages.error(request, "You must be logged in to view that page...")
         return redirect('home')
-    
 
 def delete_record(request, pk):
     if request.user.is_authenticated:
         delete_it = Record.objects.get(id=pk)
         delete_it.delete()
-        messages.success(request, "Record deleted successfully !")
+        messages.success(request, "Record deleted successfully!")
         return redirect('home')
     else:
-        messages.error(request, "You must be login to view that page...")
+        messages.error(request, "You must be logged in to view that page...")
         return redirect('home')
-    
 
 def add_record(request):
-    return render(request, 'add_record.html', {})
+    user_form = AddRecordForm(request.POST or None)
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if user_form.is_valid():
+                add_record = user_form.save()
+                messages.success(request, "Record added successfully!")
+                return redirect('home')
+        return render(request, 'add_record.html', {'form': user_form})
+    else:
+        messages.error(request, "You must be logged in to view that page...")
+        return redirect('home')

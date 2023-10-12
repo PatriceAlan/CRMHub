@@ -23,6 +23,6 @@
   </div>
   <br><br>
   <a href="{% url 'home' %}" class="btn btn-primary">Back</a>
-  <a href="{% url 'home' %}" class="btn btn-warning">update</a>
+  <a href="{% url 'update_record' user_record.id %}" class="btn btn-warning">update</a>
   <a href="{% url 'delete_record' user_record.id %}" class="btn btn-danger">Delete</a>
 {% endblock %}

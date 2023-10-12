@@ -2,31 +2,64 @@
 
 {% block content %}
 
-<div class="col-md-6 offset-md-3">
-
     {% if user.is_authenticated %}
 
-    <h1> Hello World</h1>
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Address</th>
+            <th scope="col">City</th>
+            <th scope="col">State</th>
+            <th scope="col">Zipcode</th>
+            <th scope="col">Creation Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if records %}
+          {% for record in records %}
+          <tr>
+            <th scope="row"><a href="{% url 'record' record.id %}">{{ record.id }}</a></th>
+            <td>{{ record.first_name }} {{ record.last_name }}</td>
+            <td>{{ record.email }}</td>
+            <td>{{ record.phone }}</td>
+            <td>{{ record.address }}</td>
+            <td>{{ record.city }}</td>
+            <td>{{ record.state }}</td>
+            <td>{{ record.zipcode }}</td>
+            <td>{{ record.created_at }}</td>
+          </tr>
+          {% endfor %}
+          {% endif %}
+        </tbody>
+      </table>
+      
 
     {% else %}
-<div class="card">
-    <h1 class="card-header">Login</h1>
-    <div class="card-body">
-    <form action="{% url 'home'%}" method="post">
-        {% csrf_token %}
-            <br>
-            <div class="mb-3">
-            <input type="text" class="form-control" name="username", placeholder="Enter your username" required>
-            </div>
-            <div class="mb-3">
-            
-            <input type="password" class="form-control" name="password", placeholder="Enter your password" required>
-            </div>
-            <br>
-            <button type="submit" class="btn btn-secondary">Submit</button>
-        
 
-    </form>
+<div class="col-md-6 offset-md-3">
+    <div class="card">
+        <h1 class="card-header">Login</h1>
+        <div class="card-body">
+        <form action="{% url 'home'%}" method="post">
+            {% csrf_token %}
+                <br>
+                <div class="mb-3">
+                <input type="text" class="form-control" name="username", placeholder="Enter your username" required>
+                </div>
+                <div class="mb-3">
+                
+                <input type="password" class="form-control" name="password", placeholder="Enter your password" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-secondary">Submit</button>
+            
+
+        </form>
+        </div>
     </div>
 </div>
 
